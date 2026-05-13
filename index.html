@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>jobnseek · Who you are isn't on one page.</title>
+  <meta name="description" content="jobnseek replaces the one-page PDF résumé with a full profile — kept honest by a weekly check-in. Join the waitlist.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* === VARIABLES === */
+    :root {
+      --brand: #374c4f;
+      --brand-dim: rgba(55, 76, 79, 0.12);
+      --bg: #ffffff;
+      --ink: #374c4f;
+      --muted: #887346;
+      --border: #dfaf71;
+      --surface: #F5ebdf;
+      --accent: #dfaf71;
+      --success: #10b981;
+      --font-sans: 'Geist', 'Inter Tight', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+      --max-width: 1200px;
+      --pad-section: 96px;
+    }
+
+    /* === RESET === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; font-family: inherit; }
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* === NAV === */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      height: 60px;
+      display: flex;
+      align-items: center;
+      transition: background 0.2s, backdrop-filter 0.2s;
+    }
+    nav.scrolled {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.92);
+    }
+    nav .container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-size: 1.125rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+    .nav-logo span { color: #dfaf71; }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-cta {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #fff;
+      background: var(--brand);
+      border: none;
+      border-radius: 6px;
+      padding: 8px 18px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .nav-cta:hover { background: #51604b; transform: translateY(-1px); }
+    .nav-cta:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+    /* === HERO === */
+    .hero {
+      padding: 96px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -10%;
+      right: -5%;
+      width: 640px;
+      height: 640px;
+      background: radial-gradient(circle, rgba(55, 76, 79, 0.05) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 72px;
+      align-items: center;
+    }
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .hero-headline {
+      font-size: clamp(2.5rem, 5vw, 4.75rem);
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      line-height: 1.04;
+      color: #374c4f;
+      margin-bottom: 24px;
+    }
+    .hero-headline em {
+      font-style: italic;
+      color: #dfaf71;
+    }
+    .hero-sub {
+      font-size: 1.0625rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+
+    /* === WAITLIST FORM === */
+    .waitlist-form-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 460px;
+    }
+    .waitlist-form-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.09em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .waitlist-input-row {
+      display: flex;
+      gap: 10px;
+    }
+    .waitlist-input {
+      flex: 1;
+      font-family: var(--font-sans);
+      font-size: 0.9375rem;
+      color: var(--ink);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 11px 16px;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      min-width: 0;
+    }
+    .waitlist-input:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px var(--brand-dim);
+    }
+    .waitlist-input::placeholder { color: #c4ad90; }
+    .waitlist-btn {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: #fff;
+      background: var(--brand);
+      border: none;
+      border-radius: 6px;
+      padding: 11px 22px;
+      white-space: nowrap;
+      transition: background 0.15s, transform 0.1s;
+      flex-shrink: 0;
+    }
+    .waitlist-btn:hover { background: #51604b; transform: translateY(-1px); }
+    .waitlist-btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+    .waitlist-micro {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .form-success {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 20px;
+      font-size: 0.9375rem;
+      color: var(--ink);
+      line-height: 1.6;
+    }
+    .form-success strong { font-weight: 600; }
+    .form-error {
+      display: none;
+      font-size: 0.8rem;
+      color: #b45309;
+      margin-top: 6px;
+    }
+
+    /* === HERO QUOTE CARD === */
+    .hero-quote-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 36px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-quote-bg {
+      position: absolute;
+      right: -12px;
+      bottom: -12px;
+      font-family: var(--font-mono);
+      font-size: 6rem;
+      font-weight: 700;
+      color: var(--brand);
+      opacity: 0.1;
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+    .hero-quote-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.09em;
+      color: var(--brand);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .hero-quote-card blockquote {
+      font-size: 0.9375rem;
+      font-weight: 400;
+      line-height: 1.75;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .hero-quote-attribution {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-transform: uppercase;
+      line-height: 1.6;
+    }
+
+    /* === FADE-IN === */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(14px);
+      animation: fadeUp 0.5s ease forwards;
+    }
+    .fade-in:nth-child(1) { animation-delay: 0.05s; }
+    .fade-in:nth-child(2) { animation-delay: 0.13s; }
+    .fade-in:nth-child(3) { animation-delay: 0.21s; }
+    .fade-in:nth-child(4) { animation-delay: 0.29s; }
+    .fade-in:nth-child(5) { animation-delay: 0.37s; }
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* === TWO PATHS (informational) === */
+    .paths-section {
+      background: var(--bg);
+      padding: var(--pad-section) 0;
+    }
+    .section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .section-heading {
+      font-size: clamp(1.75rem, 2.8vw, 2.4rem);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      color: #374c4f;
+      margin-bottom: 48px;
+    }
+    .paths-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .path-card {
+      background: var(--ink);
+      border: 1px solid var(--ink);
+      border-radius: 6px;
+      padding: 40px;
+      position: relative;
+    }
+    .path-heading {
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+    .path-body {
+      font-size: 0.9375rem;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+    .path-tag {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.09em;
+      color: rgba(255, 255, 255, 0.45);
+      text-transform: uppercase;
+    }
+    .path-card.seeker { background: var(--brand); border-color: var(--brand); }
+    .path-card.recruiter { background: #3a3228; border-color: #3a3228; }
+
+    /* === HOW IT WORKS === */
+    .how-section {
+      padding: var(--pad-section) 0;
+    }
+    .how-sub {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-top: -36px;
+      margin-bottom: 56px;
+    }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+    }
+    .step {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+    }
+    .step-num {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .step-heading {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #374c4f;
+      letter-spacing: -0.01em;
+      margin-bottom: 10px;
+    }
+    .step-body {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* === PHILOSOPHY === */
+    .philosophy-section {
+      background: var(--surface);
+      padding: var(--pad-section) 0;
+      border-top: 1px solid var(--border);
+    }
+    .philosophy-lead {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+      margin-bottom: 64px;
+    }
+    .philosophy-body p {
+      font-size: 1.0625rem;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 20px;
+    }
+    .philosophy-body p:last-child { margin-bottom: 0; }
+    .philosophy-ai {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 32px 36px;
+    }
+    .philosophy-ai-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--brand);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .philosophy-ai p {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 16px;
+    }
+    .philosophy-ai p:last-child { margin-bottom: 0; }
+    .philosophy-flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      align-items: stretch;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .flow-step {
+      padding: 28px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .flow-content { flex: 1; }
+    .flow-step:first-child { border-right: 1px solid var(--border); }
+    .flow-step:last-child { border-left: 1px solid var(--border); }
+    .flow-connector {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      background: var(--surface);
+      align-self: stretch;
+    }
+    .flow-connector svg {
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .flow-label {
+      font-family: var(--font-mono);
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #374c4f;
+      flex-shrink: 0;
+      width: 40px;
+      text-align: center;
+    }
+    .flow-heading {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: #374c4f;
+      margin-bottom: 8px;
+    }
+    .flow-desc {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+    .flow-step.center-step {
+      background: var(--bg);
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+
+    /* === PRIVACY === */
+    .privacy-section {
+      background: var(--surface);
+      padding: var(--pad-section) 0;
+    }
+    .privacy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 48px;
+    }
+    .privacy-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .privacy-icon {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      color: var(--brand);
+    }
+    .privacy-content { flex: 1; }
+    .privacy-heading {
+      font-size: 1.0625rem;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      color: #374c4f;
+      margin-bottom: 6px;
+    }
+    .privacy-body {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* === CHECK-IN BANNER === */
+    .checkin-section {
+      background: var(--brand);
+      padding: 80px 0;
+    }
+    .checkin-inner {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 64px;
+      align-items: center;
+    }
+    .checkin-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: rgba(255, 255, 255, 0.65);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .checkin-heading {
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+    .checkin-body {
+      font-size: 0.9375rem;
+      color: rgba(255, 255, 255, 0.88);
+      line-height: 1.7;
+      max-width: 520px;
+    }
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 18px 24px;
+      white-space: nowrap;
+    }
+    .pulse-dot {
+      width: 9px;
+      height: 9px;
+      background: var(--success);
+      border-radius: 50%;
+      flex-shrink: 0;
+      animation: pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5);
+      }
+      50% {
+        opacity: 0.9;
+        transform: scale(1.15);
+        box-shadow: 0 0 0 7px rgba(16, 185, 129, 0);
+      }
+    }
+    .status-text {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: rgba(255, 255, 255, 0.75);
+      text-transform: uppercase;
+    }
+
+    /* === BOTTOM CTA SECTION === */
+    .bottom-cta-section {
+      padding: var(--pad-section) 0;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+    .bottom-cta-inner {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .bottom-cta-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .bottom-cta-heading {
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      color: #374c4f;
+      margin-bottom: 16px;
+      line-height: 1.1;
+    }
+    .bottom-cta-sub {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+    .bottom-cta-form {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .bottom-cta-micro {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 14px;
+    }
+
+    /* === FOOTER === */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 0;
+    }
+    footer .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .footer-tagline {
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 1024px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .hero-quote-card { max-width: 560px; }
+      .steps-grid { grid-template-columns: repeat(2, 1fr); }
+      .philosophy-lead { grid-template-columns: 1fr; gap: 40px; }
+      .philosophy-flow {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+      }
+      .flow-step { border: none !important; border-bottom: 1px solid var(--border) !important; }
+      .flow-step:last-child { border-bottom: none !important; }
+      .flow-connector { display: none; }
+    }
+    @media (max-width: 768px) {
+      :root { --pad-section: 64px; }
+      .nav-links { display: none; }
+      .hero { padding: 60px 0 64px; }
+      .paths-grid { grid-template-columns: 1fr; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .privacy-grid { grid-template-columns: 1fr; }
+      .checkin-inner { grid-template-columns: 1fr; gap: 32px; }
+      footer .container { flex-direction: column; gap: 8px; text-align: center; }
+      .container { padding: 0 20px; }
+      .waitlist-input-row { flex-direction: column; }
+      .waitlist-btn { width: 100%; text-align: center; padding: 13px 22px; }
+      .bottom-cta-form { flex-direction: column; align-items: stretch; }
+      .bottom-cta-form .waitlist-input { width: 100%; }
+      .bottom-cta-form .waitlist-btn { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav" aria-label="Main navigation">
+  <div class="container">
+    <a href="#" class="nav-logo">job<span>n</span>seek</a>
+    <ul class="nav-links">
+      <li><a href="#how-it-works">How it works</a></li>
+      <li><a href="#our-approach">Our approach</a></li>
+      <li><a href="#waitlist">Join the waitlist</a></li>
+    </ul>
+    <a href="#waitlist" class="nav-cta">Join the waitlist</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" aria-label="Hero">
+  <div class="container">
+    <div class="hero-inner">
+
+      <!-- Left: headline + copy + waitlist form -->
+      <div class="hero-left">
+        <p class="hero-eyebrow fade-in">Est. 2026 · A new résumé for a new world</p>
+        <h1 class="hero-headline fade-in">Who you are<br><em>isn't</em> on one page.</h1>
+        <p class="hero-sub fade-in">In 1482, Leonardo da Vinci wrote a letter to the Duke of Milan listing his skills. The résumé hasn't meaningfully changed since. jobnseek replaces the one-page PDF with a full profile — kept honest by a weekly check-in.</p>
+
+        <div class="waitlist-form-wrap fade-in" id="hero-form-wrap">
+          <p class="waitlist-form-label">Be first in the door</p>
+          <form
+            class="waitlist-input-row"
+            action="https://formspree.io/f/mpqbnbow"
+            method="POST"
+            id="hero-waitlist-form"
+            novalidate
+          >
+            <input type="hidden" name="role" value="seeker">
+            <input type="hidden" name="_subject" value="New jobnseek waitlist signup">
+            <input
+              type="email"
+              name="email"
+              class="waitlist-input"
+              placeholder="your@email.com"
+              required
+              autocomplete="email"
+              aria-label="Email address"
+            >
+            <button type="submit" class="waitlist-btn">Join waitlist →</button>
+          </form>
+          <p class="waitlist-micro">No spam. Just a note when we open the doors.</p>
+          <p class="form-error" id="hero-form-error" role="alert">Something went wrong — please try again.</p>
+          <div class="form-success" id="hero-form-success" role="alert">
+            <strong>You're on the list.</strong> We'll reach out when jobnseek opens. Thanks for believing in something better.
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Da Vinci quote -->
+      <div class="hero-quote-card fade-in" aria-label="Origin quote">
+        <span class="hero-quote-bg" aria-hidden="true">1482</span>
+        <p class="hero-quote-label">Origin · 1482</p>
+        <blockquote>
+          "Most Illustrious Lord, having now sufficiently considered the specimens of all those who proclaim themselves skilled contrivers of instruments of war… I will endeavour, without prejudice to anyone else, to explain myself to your Excellency, showing your Lordship my secrets…"
+        </blockquote>
+        <p class="hero-quote-attribution">Leonardo da Vinci<br>to Ludovico Sforza, Duke of Milan</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TWO PATHS -->
+<section class="paths-section" id="paths" aria-label="Who jobnseek is for">
+  <div class="container">
+    <h2 class="section-heading">Pick your side of the table.</h2>
+    <div class="paths-grid">
+      <div class="path-card seeker">
+        <h3 class="path-heading">For seekers</h3>
+        <p class="path-body">There are no job listings to scroll through. You build your profile, stay active with a weekly check-in, and recruiters come to you. No algorithmic matching, no black-box scores. Just direct outreach from real people who found you and want to talk.</p>
+        <span class="path-tag">Seeker access · Opening soon</span>
+      </div>
+      <div class="path-card recruiter">
+        <h3 class="path-heading">For recruiters</h3>
+        <p class="path-body">You do the searching. Filter by skills, assessments, and characteristics, then reach out directly to candidates who are actively looking right now. Every profile you see was verified active this week. No fossils, no noise.</p>
+        <span class="path-tag">Recruiter access · By invitation</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHILOSOPHY -->
+<section class="philosophy-section" id="our-approach" aria-label="Our approach">
+  <div class="container">
+    <h2 class="section-heading">Bringing the human back.</h2>
+
+    <div class="philosophy-lead">
+      <div class="philosophy-body">
+        <p>The job market didn't just get competitive. It got hollow. Candidates send hundreds of applications into a void. Résumés get parsed by machines, filtered by keyword matching, ranked by a score that has nothing to do with whether they can actually do the work. Recruiters drown in noise they never asked for. Hiring managers meet a shortlist assembled by an algorithm and wonder why the right people never seem to make it through.</p>
+        <p>Somewhere in all of it, the person got lost.</p>
+        <p>jobnseek isn't trying to rebuild recruiting from scratch. We're fixing the part that matters most: the moment when a person who wants to work meets a person with work to offer. Direct. Human. Real.</p>
+      </div>
+      <div class="philosophy-ai">
+        <p class="philosophy-ai-label">On AI</p>
+        <p>We're not pretending AI doesn't exist. It does, and it will continue to reshape how companies hire. One day, jobnseek will put a recruiter-side AI on this platform, trained by veterans of HR who have spent careers learning the difference between a candidate who looks right on paper and one who actually is.</p>
+        <p>Not a résumé filter. Not a ranking engine. Something that can hold a thoughtful conversation about a real person's full profile and help a recruiter decide if it's worth a conversation.</p>
+        <p>But the principle doesn't change: AI in service of human judgment. A tool. Not a gatekeeper.</p>
+      </div>
+    </div>
+
+    <div class="philosophy-flow" role="img" aria-label="The jobnseek model: you build a profile, jobnseek surfaces you, a recruiter finds and contacts you">
+      <div class="flow-step">
+        <p class="flow-label">1</p>
+        <div class="flow-content">
+          <h3 class="flow-heading">Be a person, not a document.</h3>
+          <p class="flow-desc">Build a full profile. Show your work, your thinking, your assessments. Everything that doesn't fit on a résumé.</p>
+        </div>
+      </div>
+      <div class="flow-connector" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 10h12M12 6l4 4-4 4"/>
+        </svg>
+      </div>
+      <div class="flow-step center-step">
+        <p class="flow-label">2</p>
+        <div class="flow-content">
+          <h3 class="flow-heading">The system does the finding.</h3>
+          <p class="flow-desc">Recruiters search. Our platform surfaces the right active candidates. No black-box matching. Just a clean, honest search.</p>
+        </div>
+      </div>
+      <div class="flow-connector" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 10h12M12 6l4 4-4 4"/>
+        </svg>
+      </div>
+      <div class="flow-step">
+        <p class="flow-label">3</p>
+        <div class="flow-content">
+          <h3 class="flow-heading">A person decides to reach out.</h3>
+          <p class="flow-desc">They searched. They found you. They chose to start a conversation. That's how it's supposed to work.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how-it-works" aria-label="How it works">
+  <div class="container">
+    <h2 class="section-heading">How it works.</h2>
+    <p class="how-sub">Four steps. No résumé PDF required.</p>
+    <div class="steps-grid">
+      <div class="step">
+        <p class="step-num">01</p>
+        <h3 class="step-heading">Bring your résumé</h3>
+        <p class="step-body">Upload it. We'll parse it. Edit, expand, or replace any part. It's a starting point, not a ceiling.</p>
+      </div>
+      <div class="step">
+        <p class="step-num">02</p>
+        <h3 class="step-heading">Add what doesn't fit</h3>
+        <p class="step-body">Portfolio, side projects, writing, code, things you've built. The work that never makes it onto one page.</p>
+      </div>
+      <div class="step">
+        <p class="step-num">03</p>
+        <h3 class="step-heading">Take the assessments</h3>
+        <p class="step-body">Validated characteristics testing. Show how you think, communicate, and work. Not just where you've been.</p>
+      </div>
+      <div class="step">
+        <p class="step-num">04</p>
+        <h3 class="step-heading">Check in weekly</h3>
+        <p class="step-body">One click. Skip a week, you go dormant. Recruiters only see active people. No fossils in the results.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+<section class="privacy-section" id="privacy" aria-label="Data and privacy commitment">
+  <div class="container">
+    <p class="section-eyebrow">Your data</p>
+    <h2 class="section-heading">Built on trust. Not on your data.</h2>
+    <div class="privacy-grid">
+      <div class="privacy-card">
+        <svg class="privacy-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M18 3L6 8v10c0 7 5.4 13.5 12 15 6.6-1.5 12-8 12-15V8L18 3z"/>
+          <path d="M13 18l3.5 3.5 6.5-7"/>
+        </svg>
+        <div class="privacy-content">
+          <h3 class="privacy-heading">We don't sell your data. Period.</h3>
+          <p class="privacy-body">Your information is used for one purpose: connecting job seekers with recruiters on this platform. We will never sell, license, or share your data with third parties for advertising, profiling, or any purpose outside of what you signed up for.</p>
+        </div>
+      </div>
+      <div class="privacy-card">
+        <svg class="privacy-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="4" y="14" width="28" height="19" rx="2"/>
+          <path d="M11 14V10a7 7 0 0114 0v4"/>
+          <circle cx="18" cy="23" r="2" fill="currentColor" stroke="none"/>
+        </svg>
+        <div class="privacy-content">
+          <h3 class="privacy-heading">Our customers agree to the same.</h3>
+          <p class="privacy-body">Every recruiter and company on jobnseek signs our data use agreement before accessing candidate profiles. They are contractually prohibited from selling or misusing your data. Not a checkbox. A condition of access.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHECK-IN BANNER -->
+<section class="checkin-section" aria-label="Weekly check-in">
+  <div class="container">
+    <div class="checkin-inner">
+      <div>
+        <p class="checkin-eyebrow">The weekly check-in</p>
+        <h2 class="checkin-heading">Active candidates only.<br>No fossils.</h2>
+        <p class="checkin-body">Most job platforms are graveyards of profiles nobody has touched in two years. jobnseek clears the noise: if you haven't checked in this week, you're invisible. One click to stay seen.</p>
+      </div>
+      <div class="status-pill" aria-label="Status: Active">
+        <div class="pulse-dot" aria-hidden="true"></div>
+        <span class="status-text">Status · Active</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOTTOM WAITLIST CTA -->
+<section class="bottom-cta-section" id="waitlist" aria-label="Join the waitlist">
+  <div class="container">
+    <div class="bottom-cta-inner">
+      <p class="bottom-cta-eyebrow">Waitlist · Seekers</p>
+      <h2 class="bottom-cta-heading">Ready when you are.<br>Almost.</h2>
+      <p class="bottom-cta-sub">We're opening to seekers first. Drop your email and you'll be among the first through the door — no spam, just a note when we're live.</p>
+
+      <form
+        class="bottom-cta-form"
+        action="https://formspree.io/f/mpqbnbow"
+        method="POST"
+        id="bottom-waitlist-form"
+        novalidate
+      >
+        <input type="hidden" name="role" value="seeker">
+        <input type="hidden" name="_subject" value="New jobnseek waitlist signup">
+        <input
+          type="email"
+          name="email"
+          class="waitlist-input"
+          placeholder="your@email.com"
+          required
+          autocomplete="email"
+          aria-label="Email address"
+          style="max-width: 300px;"
+        >
+        <button type="submit" class="waitlist-btn">Join waitlist →</button>
+      </form>
+      <p class="bottom-cta-micro" id="bottom-form-success" role="alert" style="display:none; color: var(--brand); font-weight: 600;">You're on the list. We'll be in touch.</p>
+      <p class="form-error" id="bottom-form-error" role="alert">Something went wrong — please try again.</p>
+      <p class="bottom-cta-micro">No spam. No noise. Just the opening.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <span class="footer-copy">© 2026 jobnseek.com · Coming soon</span>
+    <span class="footer-tagline">Built for people, not algorithms.</span>
+  </div>
+</footer>
+
+<script>
+  // Nav backdrop blur on scroll
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 8);
+  }, { passive: true });
+
+  function handleForm(formId, successId, errorId, extraHide) {
+    document.getElementById(formId).addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const btn = form.querySelector('button[type="submit"]');
+      const successEl = document.getElementById(successId);
+      const errorEl = document.getElementById(errorId);
+
+      btn.disabled = true;
+      btn.textContent = 'Joining…';
+      errorEl.style.display = 'none';
+
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (res.ok) {
+          form.style.display = 'none';
+          if (extraHide) extraHide.forEach(sel => {
+            const el = document.querySelector(sel);
+            if (el) el.style.display = 'none';
+          });
+          successEl.style.display = 'block';
+        } else {
+          btn.disabled = false;
+          btn.textContent = 'Join waitlist →';
+          errorEl.style.display = 'block';
+        }
+      } catch {
+        btn.disabled = false;
+        btn.textContent = 'Join waitlist →';
+        errorEl.style.display = 'block';
+      }
+    });
+  }
+
+  handleForm(
+    'hero-waitlist-form',
+    'hero-form-success',
+    'hero-form-error',
+    ['#hero-form-wrap .waitlist-form-label', '#hero-form-wrap .waitlist-micro']
+  );
+
+  handleForm(
+    'bottom-waitlist-form',
+    'bottom-form-success',
+    'bottom-form-error',
+    ['#bottom-waitlist-form ~ .bottom-cta-micro']
+  );
+</script>
+</body>
+</html>
